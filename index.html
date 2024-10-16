@@ -3,10 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farcaster User Info</title>
+    <title>Degen Stats Frame</title>
     <style>
-        /* استایل‌ها به همان صورت که قبلاً توضیح داده شده بود */
-        /* ... */
+        body {
+            background-color: #121212; /* رنگ پس زمینه تیره */
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .background-shape {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 0, 0, 0.1), rgba(0, 0, 0, 0.8));
+            clip-path: polygon(20% 0%, 100% 0%, 100% 20%, 80% 100%, 0% 100%, 0% 80%);
+        }
+        .frame {
+            background-color: rgba(43, 43, 43, 0.9); /* فریم تیره */
+            padding: 20px;
+            border-radius: 15px;
+            width: 400px;
+            margin: 20px auto;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px); /* اضافه کردن افکت بلور */
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #00ff7f; /* رنگ لبه */
+        }
+        .user-info {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ff7f; /* رنگ نام کاربری */
+        }
+        .user-rank {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #ffffff; /* رنگ رنک */
+        }
+        .stats, .my-stats {
+            font-size: 16px;
+            text-align: left;
+            margin-top: 15px;
+            background-color: rgba(59, 59, 59, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        .stats div, .my-stats div {
+            margin: 10px 0;
+        }
+        .stats div span, .my-stats div span {
+            color: #00ff7f; /* رنگ مقادیر */
+        }
+        .input-field {
+            margin-bottom: 20px;
+        }
+        .input-field input {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            width: 300px;
+            margin-right: 10px;
+            background-color: rgba(255, 255, 255, 0.1); /* رنگ پس‌زمینه ورودی */
+            color: white;
+        }
+        .input-field button {
+            background-color: #007bff; /* رنگ دکمه */
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .input-field button:hover {
+            background-color: #0056b3; /* رنگ دکمه در حالت هاور */
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .button-container button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 48%;
+        }
+        .button-container button:hover {
+            background-color: #0056b3;
+        }
+        .most-tipped {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .most-tipped span {
+            font-weight: bold;
+        }
+        .footer {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #bbb; /* رنگ متن فوتر */
+        }
     </style>
 </head>
 <body>
@@ -22,64 +143,116 @@
         <div class="header">
             <img src="https://via.placeholder.com/50" alt="User Avatar" id="userAvatar">
             <div>
-                <div class="user-info" id="userName">@username</div>
-                <div class="user-rank">Rank: <span id="rank">N/A</span> Fid: <span id="fid">N/A</span></div>
+                <div class="user-info" id="userName">@hephaes</div>
+                <div class="user-rank">Rank: <span id="rank">1470</span>  Fid: <span id="fid">865452</span></div>
             </div>
         </div>
         <div class="stats">
-            <div>Allowance: <span id="allowance">N/A</span></div>
-            <div>Remaining: <span id="remaining">N/A</span></div>
-            <div>Points: <span id="points">N/A</span></div>
-            <div>Tipped: <span id="tipped">N/A</span></div>
+            <div>Allowance: <span id="allowance">2,561</span></div>
+            <div>Remaining: <span id="remaining">1,561</span> (17 hours 27 minutes)</div>
+            <div>Points: <span id="points">20,415</span></div>
+            <div>Tipped: <span id="tipped">1,000</span></div>
         </div>
-        <div class="footer">Degen Stats by @hephaes</div>
+
+        <!-- دکمه‌های My Stats و Share -->
+        <div class="button-container">
+            <button onclick="showMyStats()">My Stats</button>
+            <button onclick="shareStats()">Share</button>
+        </div>
+
+        <!-- بخش آمار من -->
+        <div class="my-stats" style="display: none;" id="myStatsSection">
+            <h3>My Stats</h3>
+            <div>Total Tips: <span id="totalTips">100</span></div>
+            <div>Total Locks: <span id="totalLocks">400</span></div>
+            <div>Total Points: <span id="totalPoints">2,000</span></div>
+        </div>
+
+        <div class="most-tipped">
+            Most tipped today: <span id="mostTipped">@jamesx</span> (<span id="mostTippedValue">1,000</span>)
+        </div>
+        <div class="footer">
+            Degen Stats by @hephaes
+        </div>
     </div>
 
     <script>
-        const apiToken = 'wc_secret_2aaee441599071e4f8c82c1f7e403e678ccd89cb8e2d3f113ba06578_f00ecf8c';  // در صورت نیاز به توکن API، آن را اضافه کنید.
-
         function loadUserData() {
             const userInput = document.getElementById("userInput").value;
+            const apiToken = 'wc_secret_2aaee441599071e4f8c82c1f7e403e678ccd89cb8e2d3f113ba06578_f00ecf8c'; // اینجا توکن API خود را قرار دهید
 
-            // بررسی کنیم که ورودی نام کاربری است یا FID
-            let apiUrl = '';
-            if (isNaN(userInput)) {
-                // اگر ورودی نام کاربری است
-                apiUrl = `https://api.warpcast.com/v2/users/by-username/${userInput}`;
-            } else {
-                // اگر ورودی FID است
-                apiUrl = `https://api.warpcast.com/v2/users/${userInput}`;
-            }
+            const url = `https://api.warpcast.com/v2/users/by-username/${userInput.replace('@', '')}`; // حذف '@' از نام کاربری
 
-            // ارسال درخواست به API
-            fetch(apiUrl, {
+            fetch(url, {
+                method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${apiToken}`  // در صورت نیاز به توکن احراز هویت
+                    'Authorization': `Bearer ${apiToken}`, // افزودن توکن به هدر
+                    'Content-Type': 'application/json'
                 }
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data && data.result) {
-                    updateFrame(data.result);
-                } else {
-                    alert("User not found!");
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
                 }
+                return response.json();
+            })
+            .then(data => {
+                // فرض کنید داده‌های API شامل یک کاربر با نام و اطلاعات دیگر هستند
+                updateFrame({
+                    avatar: data.avatar, // فرض کنید آواتار کاربر در داده‌های API موجود است
+                    username: `@${data.username}`, // نام کاربری
+                    rank: data.rank,
+                    fid: data.fid,
+                    allowance: data.allowance,
+                    remaining: data.remaining,
+                    points: data.points,
+                    tipped: data.tipped,
+                    totalTips: data.totalTips,
+                    totalLocks: data.totalLocks,
+                    totalPoints: data.totalPoints,
+                    mostTipped: data.mostTipped,
+                    mostTippedValue: data.mostTippedValue
+                });
             })
             .catch(error => {
                 console.error('Error fetching user data:', error);
-                alert("There was an error fetching the user data.");
+                alert('Error fetching user data. Please check the username or your API token.');
             });
         }
 
         function updateFrame(data) {
-            document.getElementById("userAvatar").src = data.profile.avatarUrl || 'https://via.placeholder.com/50';
-            document.getElementById("userName").textContent = data.profile.username;
-            document.getElementById("rank").textContent = data.stats.rank || 'N/A';
-            document.getElementById("fid").textContent = data.profile.fid || 'N/A';
-            document.getElementById("allowance").textContent = data.stats.allowance || 'N/A';
-            document.getElementById("remaining").textContent = data.stats.remaining || 'N/A';
-            document.getElementById("points").textContent = data.stats.points || 'N/A';
-            document.getElementById("tipped").textContent = data.stats.tipped || 'N/A';
+            document.getElementById("userAvatar").src = data.avatar;
+            document.getElementById("userName").textContent = data.username;
+            document.getElementById("rank").textContent = data.rank;
+            document.getElementById("fid").textContent = data.fid;
+            document.getElementById("allowance").textContent = data.allowance;
+            document.getElementById("remaining").textContent = data.remaining;
+            document.getElementById("points").textContent = data.points;
+            document.getElementById("tipped").textContent = data.tipped;
+            document.getElementById("totalTips").textContent = data.totalTips;
+            document.getElementById("totalLocks").textContent = data.totalLocks;
+            document.getElementById("totalPoints").textContent = data.totalPoints;
+            document.getElementById("mostTipped").textContent = data.mostTipped;
+            document.getElementById("mostTippedValue").textContent = data.mostTippedValue;
+        }
+
+        function showMyStats() {
+            const myStatsSection = document.getElementById("myStatsSection");
+            myStatsSection.style.display = myStatsSection.style.display === "none" ? "block" : "none";
+        }
+
+        function shareStats() {
+            const userName = document.getElementById("userName").textContent;
+            const rank = document.getElementById("rank").textContent;
+            const fid = document.getElementById("fid").textContent;
+            const points = document.getElementById("points").textContent;
+
+            const shareText = `${userName} | Rank: ${rank} | Fid: ${fid} | Points: ${points}`;
+            navigator.clipboard.writeText(shareText).then(() => {
+                alert("Stats copied to clipboard!");
+            }).catch(err => {
+                console.error("Could not copy text: ", err);
+            });
         }
     </script>
 </body>
