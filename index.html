@@ -179,7 +179,7 @@
     <script>
         async function loadUserData() {
             const userInput = document.getElementById("userInput").value;
-            const apiUrl = `https://cors-anywhere.herokuapp.com/https://api.warpcast.com/v2/users/by-username/${userInput}`; // استفاده از CORS Anywhere
+            const apiUrl = `https://corsproxy.io/?https://api.warpcast.com/v2/users/by-username/${userInput}`; // استفاده از CORS Anywhere
 
             try {
                 const response = await fetch(apiUrl, {
