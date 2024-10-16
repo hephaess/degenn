@@ -177,30 +177,26 @@
     </div>
 
     <script>
-        function loadUserData() {
+        async function loadUserData() {
             const userInput = document.getElementById("userInput").value;
-            const apiToken = 'wc_secret_2aaee441599071e4f8c82c1f7e403e678ccd89cb8e2d3f113ba06578_f00ecf8c'; // اینجا توکن API خود را قرار دهید
+            const apiUrl = `https://cors-anywhere.herokuapp.com/https://api.warpcast.com/v2/users/by-username/${userInput}`; // استفاده از CORS Anywhere
 
-            const apiUrl = `https://cors-anywhere.herokuapp.com/https://api.warpcast.com/v2/users/by-username/${userInput.replace('@', '')}`; // حذف '@' از نام کاربری
+            try {
+                const response = await fetch(apiUrl, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer wc_secret_7aab92a18f20e9b2f8677a464c560722e577a6df2a5a30a4751f2a61_7fbc7721` // توکن API خود را اینجا قرار دهید
+                    }
+                });
 
-            fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${apiToken}`, // افزودن توکن به هدر
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    throw new Error("Network response was not ok");
                 }
-                return response.json();
-            })
-            .then(data => {
-                // فرض کنید داده‌های API شامل یک کاربر با نام و اطلاعات دیگر هستند
+
+                const data = await response.json();
                 updateFrame({
-                    avatar: data.avatar, // فرض کنید آواتار کاربر در داده‌های API موجود است
-                    username: `@${data.username}`, // نام کاربری
+                    avatar: data.avatar, 
+                    username: data.username,
                     rank: data.rank,
                     fid: data.fid,
                     allowance: data.allowance,
@@ -213,11 +209,10 @@
                     mostTipped: data.mostTipped,
                     mostTippedValue: data.mostTippedValue
                 });
-            })
-            .catch(error => {
-                console.error('Error fetching user data:', error);
-                alert('Error fetching user data. Please check the username or your API token.');
-            });
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+                alert("Error fetching user data: " + error.message);
+            }
         }
 
         function updateFrame(data) {
@@ -242,17 +237,7 @@
         }
 
         function shareStats() {
-            const userName = document.getElementById("userName").textContent;
-            const rank = document.getElementById("rank").textContent;
-            const fid = document.getElementById("fid").textContent;
-            const points = document.getElementById("points").textContent;
-
-            const shareText = `${userName} | Rank: ${rank} | Fid: ${fid} | Points: ${points}`;
-            navigator.clipboard.writeText(shareText).then(() => {
-                alert("Stats copied to clipboard!");
-            }).catch(err => {
-                console.error("Could not copy text: ", err);
-            });
+            alert("Share your stats feature coming soon!");
         }
     </script>
 </body>
