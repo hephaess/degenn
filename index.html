@@ -181,7 +181,7 @@
             const userInput = document.getElementById("userInput").value;
             const apiToken = 'wc_secret_2aaee441599071e4f8c82c1f7e403e678ccd89cb8e2d3f113ba06578_f00ecf8c'; // اینجا توکن API خود را قرار دهید
 
-            const url = `https://api.warpcast.com/v2/users/by-username/${userInput.replace('@', '')}`; // حذف '@' از نام کاربری
+            const apiUrl = `https://cors-anywhere.herokuapp.com/https://api.warpcast.com/v2/users/by-username/${userInput.replace('@', '')}`; // حذف '@' از نام کاربری
 
             fetch(url, {
                 method: 'GET',
